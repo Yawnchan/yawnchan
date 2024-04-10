@@ -1,0 +1,319 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+public class Main {
+    public static void main(String[] args) {
+        VideoStore store = new VideoStore();
+        Scanner sc = new Scanner(System.in);
+        boolean a = true;
+        while(a) {
+            System.out.println("Renting Menu");
+            System.out.println("1. Rent Movie");
+            System.out.println("2. Rent Game");
+            System.out.println("3. Checkout");
+            System.out.println("Enter selection:");
+            
+            if(sc.hasNextInt()) {
+                int choice = sc.nextInt();
+                switch (choice) {
+                    case 1:
+                        
+                        ArrayList<Video> videos = store.videosInStock();
+                        if(videos.isEmpty()) {
+                            System.out.println("\nThere are no more videos in stock.");
+                            break;
+                        }
+                        System.out.println("\nVideo Menu");
+                        for(int i = 0; i < videos.size(); i++) {
+                            System.out.println((i+1) + ". " + videos.get(i).getTitle());
+                        }
+                        System.out.println("0. Cancel");
+                        System.out.println("Enter selection:");
+                        int videoChoice = sc.nextInt();
+                        if(videoChoice >= 1 && videoChoice <= videos.size()) {
+                            Video selectedVideo = videos.get(videoChoice - 1);
+                            System.out.printf("\nTitle:%34s\n",selectedVideo.getTitle());
+                            System.out.println("Cost:                               " + selectedVideo.getCost());
+                            System.out.println("Rating:                            PG-13");
+                            System.out.printf("Director:%31s\n",selectedVideo.getDirector());
+                            System.out.println("Runtime:                     " + selectedVideo.getMinutes() + " minutes");
+                            System.out.println("\n1 - Rent, 2 - Put Back");
+                            System.out.println("Enter selection:");
+                            int rentChoice = sc.nextInt();
+                            if(rentChoice == 1) {
+                                selectedVideo.setRented(true);
+                                //System.out.println("Video rented successfully!");
+                            }
+                        }
+                        else if(videoChoice == 0) {
+
+                        }
+                        else {
+                            System.out.println("Invalid selection!");
+                        }
+                        break;
+                    case 2:
+                        
+                        ArrayList<Game> games = store.gamesInStock();
+                        if(games.isEmpty()) {
+                            System.out.println("\nThere are no more games in stock.");
+                            break;
+                        }
+                        System.out.println("\nGame Menu");
+                        for(int i = 0; i < games.size(); i++) {
+                            System.out.println((i + 1) + ". " + games.get(i).getTitle());
+                        }
+                        System.out.println("0. Cancel");
+                        System.out.println("Enter selection:");
+                        int gameChoice = sc.nextInt();
+                        if(gameChoice >= 1 && gameChoice <= games.size()) {
+                            Game selectedGame = games.get(gameChoice - 1);
+                            String r;
+                            if(selectedGame.getRating() == 0) {
+                                r = "Early Childhood";
+                            }
+                            else if(selectedGame.getRating() == 1) {
+                                r = "Teen";
+                            }
+                            else {
+                                r = "Mature";
+                            }
+                            System.out.printf("\nTitle:%34s\n",selectedGame.getTitle());
+                            System.out.println("Cost:                               " + selectedGame.getCost());
+                            System.out.printf("Rating:%33s\n", r);
+                            System.out.printf("Platform:%31s\n", selectedGame.getPlatform());
+                            System.out.println("# of players:                          " + selectedGame.getNumberOfPlayers());
+                            System.out.println("\n1 - Rent, 2 - Put Back");
+                            System.out.println("Enter selection:");
+                            int rentChoice = sc.nextInt();
+                            if(rentChoice == 1) {
+                                selectedGame.setRented(true);
+                            }
+                        }
+                        else if(gameChoice == 0) {
+
+                        }
+                        else {
+                            System.out.println("Invalid selection!");
+                        }
+                        break;
+                    case 3:
+                        
+                        ArrayList<Game> rentedGames = store.getRentedGames();
+                        ArrayList<Video> rentedVideos = store.getRentedVideos();
+                        a = false;
+
+                        if(rentedGames.isEmpty() && rentedVideos.isEmpty()) {
+                            System.out.println("\nYou did not rent anything.");
+                            System.out.println("Have a good day!");
+                        }
+                        else {
+                            double subtotal = 0;
+                            System.out.println("\nReceipt:");
+                            if(!rentedVideos.isEmpty()) {
+                                System.out.println("\nRented Videos:");
+                                for(Rental item : rentedVideos) {
+                                    System.out.printf("    %-16s%20.2f%n", item.getTitle(), item.getCost());
+                                    subtotal += item.getCost();
+                                }
+                            }
+                            if(!rentedGames.isEmpty()) {
+                                System.out.println("\nRented Games:");
+                                for(Rental item : rentedGames) {
+                                    System.out.printf("    %-16s%20.2f%n", item.getTitle(), item.getCost());
+                                    subtotal += item.getCost();
+                                }
+                            }
+                            double taxRate = 0.0825;
+                            double tax = subtotal * taxRate;
+                            double total = subtotal + tax;
+                            System.out.printf("\n%-20s%20.2f%n", "Subtotal:", subtotal);
+                            System.out.printf("%-20s%20.2f%n", "Tax:", tax);
+                            System.out.printf("%-20s%20.2f%n", "Total:", total);
+                        }
+                        break;
+                    default:
+                        System.out.println("Invalid selection!");
+                }
+            }
+            else {
+                //System.out.println("Invalid input!");
+                //sc.next();
+                break;
+            }
+            System.out.println();
+        }
+    }
+}
+
+------------------------------------------------------------------------------------------------------
+
+import java.util.ArrayList;
+import java.util.Scanner;
+public class Game extends Rental {
+    private String platform;
+    private int numberOfPlayers;
+
+    public Game(String t, double c, int r, String p, int n) {
+        super(t, c, r);
+        platform = p;
+        numberOfPlayers = n;
+    }
+
+    public String getPlatform() {
+        return platform;
+    }
+    public int getNumberOfPlayers() {
+        return numberOfPlayers;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%-16s%20.2f", getTitle(), getCost());
+    }
+}
+
+------------------------------------------------------------------------------------------------------------
+
+import java.util.ArrayList;
+import java.util.Scanner;
+public class VideoStore {
+    private ArrayList<Rental> rentals;
+
+    public VideoStore() {
+        rentals = new ArrayList<>();
+        rentals.add(new Video("Iron Man 3", 3.99, 1, "Shawn Black", 130));
+        rentals.add(new Video("The Wolverine", 2.79, 1, "James Mangold", 126));
+        rentals.add(new Video("The Avengers", 1.99, 1, "Joss Whedon", 143));
+
+        rentals.add(new Game("Assassin's Creed", 4.99, 2, "Playstation 3", 1));
+        rentals.add(new Game("Frogger Advanced", 2.99, 0, "Game Boy Advanced", 1));
+        rentals.add(new Game("Bomberman Land", 2.99, 1, "Super NES", 4));
+
+    }
+
+    public ArrayList<Game> getGames() {
+        ArrayList<Game> games = new ArrayList<>();
+        for(Rental item : rentals) {
+            if(item instanceof Game) {
+                games.add((Game) item);
+            }
+        }
+        return games;
+    }
+
+    public ArrayList<Video> getVideos() {
+        ArrayList<Video> videos = new ArrayList<>();
+        for(Rental item : rentals) {
+            if(item instanceof Video) {
+                videos.add((Video) item);
+            }
+        }
+        return videos;
+    }
+
+    public ArrayList<Rental> rented() {
+        ArrayList<Rental> rentedItems = new ArrayList<>();
+        for(Rental item : rentals) {
+            if(item.isRented()) {
+                rentedItems.add(item);
+            }
+        }
+        return rentedItems;
+    }
+
+    public ArrayList<Game> gamesInStock() {
+        ArrayList<Game> games = new ArrayList<>();
+        for(Rental item : rentals) {
+            if(item instanceof Game && !item.isRented()) {
+                games.add((Game) item);
+            }
+        }
+        return games;
+    }
+    public ArrayList<Video> videosInStock() {
+        ArrayList<Video> videos = new ArrayList<>();
+        for(Rental item : rentals) {
+            if(item instanceof Video && !item.isRented()) {
+                videos.add((Video) item);
+            }
+        }
+        return videos;
+    }
+
+    public ArrayList<Game> getRentedGames() {
+        ArrayList<Game> games = new ArrayList<>();
+        for(Rental item : rentals) {
+            if(item instanceof Game && item.isRented()) {
+                games.add((Game) item);
+            }
+        }
+        return games;
+    }
+    public ArrayList<Video> getRentedVideos() {
+        ArrayList<Video> videos = new ArrayList<>();
+        for(Rental item : rentals) {
+            if(item instanceof Video && item.isRented()) {
+                videos.add((Video) item);
+            }
+        }
+        return videos;
+    }
+}
+
+-----------------------------------------------------------------------------------------------------
+
+import java.util.ArrayList;
+import java.util.Scanner;
+public class Rental {
+    private String title;
+    private double cost;
+    private int rating;
+    private boolean rented;
+
+    public Rental(String t, double c, int r) {
+        title = t;
+        cost = c;
+        rating = r;
+        rented = false;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+    public double getCost() {
+        return cost;
+    }
+    public int getRating() {
+        return rating;
+    }
+    public boolean isRented() {
+        return rented;
+    }
+    public void setRented(boolean r) {
+        rented = r;
+    }
+}
+
+-----------------------------------------------------------------------------------------------------
+
+import java.util.ArrayList;
+import java.util.Scanner;
+public class Video extends Rental {
+    private String director;
+    private int minutes;
+
+    public Video(String t, double c, int r, String d, int m) {
+        super(t, c, r);
+        director = d;
+        minutes = m;
+    }
+
+    public String getDirector() {
+        return director;
+    }
+    public int getMinutes() {
+        return minutes;
+    }
+}
+
+----------------------------------------------------------------------------
