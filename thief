@@ -1,0 +1,42 @@
+public class Thief extends GameCharacter {
+    private int stealthPoints;
+    private int inventoryWeight;
+
+    // Constructor
+    public Thief(String characterName, int hitPoints, int stealthPoints, int inventoryWeight) {
+        super(characterName, hitPoints, 0); // Magic points set to 0 for Thief
+        this.stealthPoints = stealthPoints;
+        this.inventoryWeight = inventoryWeight;
+    }
+
+    // Getters
+    public int getStealthPoints() {
+        return stealthPoints;
+    }
+
+    public int getInventoryWeight() {
+        return inventoryWeight;
+    }
+
+    // Setters
+    public void setStealthPoints(int stealthPoints) {
+        this.stealthPoints = stealthPoints;
+    }
+
+    public void setInventoryWeight(int inventoryWeight) {
+        this.inventoryWeight = inventoryWeight;
+    }
+
+    // Other Methods
+    public int stealthAbility() {
+        int effectiveStealth = stealthPoints - (inventoryWeight / 2);
+        return Math.max(effectiveStealth, 0); // Minimum of 0
+    }
+
+    // Method Override
+    @Override
+    public void takeDamage(int damage) {
+        int reducedDamage = Math.max(damage - stealthAbility(), 0);
+        super.takeDamage(reducedDamage);
+    }
+}
