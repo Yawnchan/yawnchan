@@ -1,0 +1,29 @@
+public class Student extends Person{
+    private int id;
+    Student(String firstName,String lastName,int id){
+        super(firstName,lastName);
+        this.id=id;
+    }
+    public int getID(){
+        return id;
+    }
+    @Override
+    public int compareTo(Object o){
+        if(o instanceof Student){
+            if(super.compareTo(o)==0){
+                Student s=(Student)o;
+                return id-s.getID();
+            }
+            else{
+                return super.compareTo(o);
+            }
+        }
+        else{
+            return -1;
+        }
+    }
+    @Override
+    public String toString(){
+        return id+" - "+super.toString();
+    }
+}
