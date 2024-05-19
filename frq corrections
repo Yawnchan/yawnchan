@@ -1,0 +1,401 @@
+public class WordScrambler {
+    
+    private String[] scrambledWords;
+
+    public WordScrambler(String[] wordArr){
+
+        this.scrambledWords = mixedWords(wordArr);
+    }
+
+    public String recombine(String word1, String word2){
+        return word1.substring(0, word1.length() / 2) + word2.substring(word2.length() / 2);
+    }
+
+    public String[] mixedWords(String[] words){
+         String[] result = new String[words.length];
+
+
+     for (int k = 0; k < result.length; k = k + 2){
+
+
+          result[k] = recombine(words[k], words[k+1]);
+
+
+          result[k + 1] = recombine (words[k + 1], words[k]);
+
+
+     }
+
+
+     return result;
+
+
+}
+}
+
+
+
+
+
+
+
+
+-------------------------------------
+
+frq correction b
+
+
+public class Mountain{
+
+
+   // You may want to write isIncreasing() and isDecreasing() so that you can test your other methods.
+   
+    public static boolean isIncreasing(int[] array, int stop){
+         for (int i = 1; i <= stop; i++) {
+            if (array[i] <= array[i - 1]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    public static boolean isDecreasing(int[] array, int start){
+    for (int i = start + 1; i < array.length; i++) {
+            if (array[i] >= array[i - 1]) {
+                return false;
+            }
+        }
+        return true;
+
+
+    }
+
+
+    public static int getPeakIndex(int[] array){
+if(array.length<3){
+
+
+
+
+return -1;
+
+
+
+
+}
+
+
+
+
+for(int k = 1; k<array.length-1; k++){
+
+
+
+
+if(array[k-1]<array[k] && array[k+1]<array[k]){
+
+
+
+
+return k;
+
+
+
+
+}
+
+
+
+
+}
+
+
+
+
+return -1;
+
+
+    }
+
+
+    public static boolean isMountain(int[] array){
+
+
+        int i = getPeakIndex(array);
+
+
+
+
+if(i == -1){
+
+
+
+
+return false;}
+
+
+
+
+if(isIncreasing(array,i)&&isDecreasing(array,i)){
+
+
+
+
+return true;
+
+
+
+
+}
+
+
+
+
+return false;
+    }
+}
+
+
+
+
+--------------------------------------------------
+frq correction 2a
+
+import java.util.*;
+public class TemperatureGrid{
+
+
+    private double[][] temps;
+
+
+
+
+    public double computeTemp(int row, int col){
+double temp1 = temps[row][col];
+
+
+
+
+if(row == 0||col==0|| row==temps.length-1||col == temps[0].length-1)
+
+
+
+
+return temp1;
+
+
+
+
+else{
+
+
+
+
+double average = temps[row][col-1] +temps[row][col+1]+temps[row-1][col]+temps[row+1][col];
+
+
+
+
+average /=4;
+
+
+
+
+return average;
+
+
+
+
+}
+
+
+
+
+    }
+
+
+
+
+    public boolean updateAllTemps(double tolerance){
+double[][] newTemp = new double[temps.length][temps[0].length];
+boolean tol = true;
+
+
+
+
+for(int i = 0; i<temps.length; i++){
+
+
+
+
+for(int j = 0; j<temps[0].length;j++){
+
+
+
+
+newTemp[i][j] = computeTemp(i,j);
+
+
+
+
+if(Math.abs(temps[i][j]-newTemp[i][j])>=tolerance){
+
+
+
+
+tol = false;}
+
+
+
+
+}
+
+
+
+
+}
+
+
+
+
+temps = newTemp;
+
+
+
+
+return tol;
+
+
+
+
+}
+
+
+        
+    }
+
+
+
+------------------------------------------
+frq correction 2 b
+
+import java.util.*;
+
+public class ScoreInfo implements Comparable<ScoreInfo>{
+
+    private int score;
+    private int numStudents;
+
+    public ScoreInfo(int aScore){
+        score = aScore;
+        numStudents = 1;
+    }
+
+    public void increment(){
+        numStudents++;
+    }
+
+    public int getScore(){
+        return score;
+    }
+
+    public int getFrequency(){
+        return numStudents;
+    }
+
+  //@Override
+  public int compareTo(ScoreInfo other) {
+    return Integer.compare(this.score, other.score);
+  }
+}
+
+
+-------------------------------------
+
+stats class
+
+import java.util.*;
+
+
+public class Stats{
+
+
+    private ArrayList<ScoreInfo>  scoreList;
+
+
+
+
+    public boolean record(int score){
+for(int j = 0; j<scoreList.size(); j++){
+
+
+
+
+if( score<scoreList.get(j).getScore()){
+
+
+
+
+scoreList.add(j,new ScoreInfo(score));
+
+
+
+
+return true;}
+
+
+
+
+else if (score == scoreList.get(j).getScore()){
+
+
+
+
+scoreList.get(j).increment();
+
+
+
+
+return false;
+
+
+
+
+}
+
+
+
+
+}
+
+
+
+
+scoreList.add(new ScoreInfo(score));
+
+
+
+
+return true;
+
+
+
+
+
+
+    }
+
+
+    public void recordScores(int[] stuScores){
+        for(int score : stuScores)
+        record(score);
+
+
+    }
+}
+
+
+
+
+
